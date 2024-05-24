@@ -1,6 +1,6 @@
-package com.mvc.allarthropods;
+package com.mvc.bastion;
 
-import com.mvc.allarthropods.Filters.StructureFilter;
+import com.mvc.bastion.Filters.StructureFilter;
 import com.seedfinding.mccore.rand.ChunkRand;
 
 import java.io.FileWriter;
@@ -19,11 +19,12 @@ public class Main {
         long currentTime;
 
         while (seedMatches < Config.SEED_MATCHES) {
-            long structureSeed = random.nextLong() % (1L << 48);
+            long structureSeed = random.nextLong() & 0xFFFFFFFFFFFFL;
             Long matchedStructureSeed = filterStructureSeed(structureSeed, chunkRand) ? structureSeed : null;
 
             if (matchedStructureSeed != null) {
                 output.write(matchedStructureSeed + "\n");
+                System.out.println(matchedStructureSeed);
                 seedMatches++;
             }
             seedsChecked++;
@@ -37,6 +38,7 @@ public class Main {
         output.close();
         System.out.printf("%,d seeds checked with %,d matches.\r", seedsChecked, seedMatches);
     }
+
     public static boolean filterStructureSeed(long structureSeed, ChunkRand chunkRand) {
         StructureFilter structureFilter = new StructureFilter(structureSeed, chunkRand);
 
